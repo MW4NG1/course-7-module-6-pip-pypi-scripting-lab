@@ -1,4 +1,17 @@
 from datetime import datetime
+import requests
+
+def fetch_data():
+    """Fetches sample data from a public REST API using the requests package."""
+    try:
+        response = requests.get(
+            "https://jsonplaceholder.typicode.com/posts/1", timeout=5
+        )
+        if response.status_code == 200:
+            return response.json()
+    except requests.RequestException:
+        pass
+    return {}
 
 def generate_log(log_data):
     """Generates a timestamped log file from a list of log entries.
@@ -17,7 +30,17 @@ def generate_log(log_data):
     print(f"Log written to {filename}")
     return filename
 
+
 if __name__ == "__main__":
-    # Example execution data
-    sample_data = ["User logged in", "User updated profile", "Report exported"]
+    # Fetch data using the installed requests package
+    post = fetch_data()
+    post_title = post.get("title", "No title found")
+    print("Fetched Post Title:", post_title)
+
+    # Log the fetched title along with status entries
+    sample_data = [
+        "User logged in",
+        f"Fetched post title: {post_title}",
+        "Report exported",
+    ]
     generate_log(sample_data)
